@@ -5,7 +5,6 @@
 struct Point {
     std::string label;
     int count;
-    bool myself;
 };
 
 #endif
