@@ -17,4 +17,4 @@ add_subdirectory(raylib)
 
 add_executable(${PROJECT_NAME} ${SOURCE})
 target_link_libraries(${PROJECT_NAME} PUBLIC raylib)
-target_include_directories(${PROJECT_NAME} PUBLIC imgui rlImGui)
+target_include_directories(${PROJECT_NAME} PUBLIC imgui rlImGui include)

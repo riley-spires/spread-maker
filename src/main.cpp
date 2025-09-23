@@ -1,17 +1,19 @@
 #include <raylib.h>
 #include <rlImGui.h>
 #include <imgui.h>
+#include <point.h>
+
 #include <format>
 #include <string>
-#include <unordered_map>  
 #include <fstream>
 #include <string>
 #include <print>
 #include <iostream>
+#include <vector>
 
 
 int main() {
-    std::unordered_map<std::string, std::pair<int, bool>> values;
+    std::vector<Point> values;
 
     std::ifstream file("x-axis.csv");
     if (file.bad()) {
@@ -29,7 +31,7 @@ int main() {
             x.replace(idx, 1, "");
         }
 
-        values.insert({x, {0, false}});
+        values.push_back(Point{x, 0, false});
     } while (!file.eof());
     file.close();
 
@@ -44,7 +46,7 @@ int main() {
 
     char outputBuffer[50] = "Output.png";
 
-    const int size = 35;
+    const int size = 20;
 
     while (!WindowShouldClose()) {
         bool shouldTakeScreenshot = false;
@@ -54,11 +56,11 @@ int main() {
         DrawLine(150, 30, 150, 70 + values.size() * 100, WHITE);
 
         int i = 0;
-        for (const auto &pair : values) {
-            DrawText(std::format("{}", pair.first).c_str(), 50, 50 + i * 100, size, WHITE);
-            for (int j = 0; j < pair.second.first; ++j) {
+        for (const auto &point : values) {
+            DrawText(point.label.c_str(), 50, 50 + i * 100, size, WHITE);
+            for (int j = 0; j < point.count; ++j) {
                 Color color = BLUE;
-                if (j == 0 && pair.second.second) {
+                if (j == 0 && point.myself) {
                     color = ORANGE;
                 }
                 DrawCircle(200 + j * 100, 50 + i * 100, size, color);
@@ -69,11 +71,16 @@ int main() {
         rlImGuiBegin();
 
         if (ImGui::Begin("Config", &open)) {
-            for (auto &pair : values) {
-                ImGui::SliderInt(pair.first.c_str(), &pair.second.first, 0, 4);
-                ImGui::PushID(pair.first.c_str());
-                ImGui::Checkbox("Myself", &pair.second.second);
-                ImGui::PopID();
+            for (auto &point : values) {
+                if (point.count == 0) {
+                    point.myself = false;
+                }
+                ImGui::SliderInt(point.label.c_str(), &point.count, 0, 4);
+                if (point.count > 0) {
+                    ImGui::PushID(point.label.c_str());
+                    ImGui::Checkbox("Myself", &point.myself);
+                    ImGui::PopID();
+                }
             }
 
             ImGui::InputText("Output", outputBuffer, 50);
