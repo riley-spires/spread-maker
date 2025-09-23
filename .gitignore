@@ -39,3 +39,16 @@
 
 # debug information files
 *.dwo
+
+# ImGui
+imgui.ini
+
+# X-Axis
+x-axis.csv
+
+# Build
+build
+.cache
+
+# Outputs
+*.png
