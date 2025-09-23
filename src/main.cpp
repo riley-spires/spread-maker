@@ -44,6 +44,8 @@ int main() {
 
     char outputBuffer[50] = "Output.png";
 
+    const int size = 35;
+
     while (!WindowShouldClose()) {
         bool shouldTakeScreenshot = false;
         BeginDrawing();
@@ -53,13 +55,13 @@ int main() {
 
         int i = 0;
         for (const auto &pair : values) {
-            DrawText(std::format("{}: {}", pair.first, pair.second.first).c_str(), 50, 50 + i * 100, 15, WHITE);
+            DrawText(std::format("{}", pair.first).c_str(), 50, 50 + i * 100, size, WHITE);
             for (int j = 0; j < pair.second.first; ++j) {
                 Color color = BLUE;
                 if (j == 0 && pair.second.second) {
                     color = ORANGE;
                 }
-                DrawCircle(200 + j * 100, 50 + i * 100, 20, color);
+                DrawCircle(200 + j * 100, 50 + i * 100, size, color);
             }
             ++i;
         }
