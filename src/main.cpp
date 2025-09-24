@@ -52,16 +52,16 @@ int main() {
         BeginDrawing();
 
         ClearBackground(GRAY);
-        DrawLine(150, 30, 150, 70 + values.size() * 100, WHITE);
+        DrawLine(30, 600, 70 + values.size() * 100, 600, WHITE);
 
         for (int i = 0; i < values.size(); ++i) {
-            DrawText(values[i].label.c_str(), 50, 50 + i * 100, size, WHITE);
+            DrawText(values[i].label.c_str(), 40 + i * 100, 650, size, WHITE);
             for (int j = 0; j < values[i].count; ++j) {
                 Color color = BLUE;
                 if (j == 0 && i == myselfIdx) {
                     color = ORANGE;
                 }
-                DrawCircle(200 + j * 100, 50 + i * 100, size, color);
+                DrawCircle(40 + i * 100, 550 - j * 100, size, color);
             }
         }
 
@@ -72,7 +72,6 @@ int main() {
                 ImGui::SliderInt(values[i].label.c_str(), &values[i].count, 0, 4);
                 if (values[i].count > 0) {
                     ImGui::PushID(values[i].label.c_str());
-                    // ImGui::Checkbox("Myself", &values[i].myself);
                     ImGui::RadioButton("Myself", &myselfIdx, i);
                     ImGui::PopID();
                 }
