@@ -43,7 +43,7 @@ int main() {
     rlImGuiSetup(true);
 
     bool open = true;
-    char outputBuffer[50] = "Output.png";
+    char outputBuffer[999] = "Output.png";
     const int size = 20;
     int myselfIdx = 0;
 
@@ -52,7 +52,7 @@ int main() {
         BeginDrawing();
 
         ClearBackground(GRAY);
-        DrawLine(30, 600, 70 + values.size() * 100, 600, WHITE);
+        DrawLine(30, 600, 50 + values.size() * 100, 600, WHITE);
 
         for (int i = 0; i < values.size(); ++i) {
             DrawText(values[i].label.c_str(), 40 + i * 100, 650, size, WHITE);
@@ -77,7 +77,7 @@ int main() {
                 }
             }
 
-            ImGui::InputText("Output", outputBuffer, 50);
+            ImGui::InputText("Output", outputBuffer, 999);
 
             if (ImGui::Button("Generate")) {
                 shouldTakeScreenshot = true;
@@ -91,7 +91,13 @@ int main() {
         EndDrawing();
 
         if (shouldTakeScreenshot) {
-            TakeScreenshot(outputBuffer);
+            auto img = LoadImageFromScreen();
+            auto bounds = Rectangle{0,0, float(60 + values.size() * 100), 675};
+            ImageCrop(&img, bounds);
+
+            ExportImage(img, outputBuffer);
+
+            shouldTakeScreenshot = false;
         }
     }
 
