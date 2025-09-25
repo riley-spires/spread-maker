@@ -47,19 +47,25 @@ int main() {
     const int size = 20;
     int myselfIdx = 0;
 
+    float selfColor[] = {float(ORANGE.r) / 255, float(ORANGE.g) / 255, float(ORANGE.b) / 255};
+    float teamColor[] = {0, 0, 1};
+    float backgroundColor[] = {float(GRAY.r) / 255, float(GRAY.g) / 255, float(GRAY.b) / 255};
+    float lineColor[] = {1, 1, 1};
+    float fontColor[] = {1, 1, 1};
+
     while (!WindowShouldClose()) {
         bool shouldTakeScreenshot = false;
         BeginDrawing();
 
-        ClearBackground(GRAY);
-        DrawLine(30, 600, 50 + values.size() * 100, 600, WHITE);
+        ClearBackground(ColorFromNormalized(Vector4{backgroundColor[0], backgroundColor[1], backgroundColor[2], 1}));
+        DrawLine(30, 600, 50 + values.size() * 100, 600, ColorFromNormalized(Vector4{lineColor[0], lineColor[1], lineColor[2], 1}));
 
         for (int i = 0; i < values.size(); ++i) {
-            DrawText(values[i].label.c_str(), 40 + i * 100, 650, size, WHITE);
+            DrawText(values[i].label.c_str(), 40 + i * 100, 650, size, ColorFromNormalized(Vector4{fontColor[0], fontColor[1], fontColor[2], 1}));
             for (int j = 0; j < values[i].count; ++j) {
-                Color color = BLUE;
+                Color color = ColorFromNormalized(Vector4{teamColor[0], teamColor[1], teamColor[2], 1});
                 if (j == 0 && i == myselfIdx) {
-                    color = ORANGE;
+                    color = ColorFromNormalized(Vector4{selfColor[0], selfColor[1], selfColor[2], 1});
                 }
                 DrawCircle(40 + i * 100, 550 - j * 100, size, color);
             }
@@ -76,6 +82,13 @@ int main() {
                     ImGui::PopID();
                 }
             }
+
+
+            ImGui::ColorEdit3("BackgroundColor", backgroundColor);
+            ImGui::ColorEdit3("Divider Color", lineColor);
+            ImGui::ColorEdit3("Font Color", fontColor);
+            ImGui::ColorEdit3("Myself Color", selfColor);
+            ImGui::ColorEdit3("Team Color", teamColor);
 
             ImGui::InputText("Output", outputBuffer, 999);
 
