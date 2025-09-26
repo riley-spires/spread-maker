@@ -11,6 +11,10 @@
 #include <iostream>
 #include <vector>
 
+// TODO: Better Name, Seperate File
+Color normToReg(float *col) {
+    return ColorFromNormalized(Vector4{col[0], col[1], col[2], 1});
+}
 
 int main() {
     std::vector<Point> values;
@@ -54,18 +58,17 @@ int main() {
     float fontColor[] = {1, 1, 1};
 
     while (!WindowShouldClose()) {
-        bool shouldTakeScreenshot = false;
         BeginDrawing();
 
-        ClearBackground(ColorFromNormalized(Vector4{backgroundColor[0], backgroundColor[1], backgroundColor[2], 1}));
-        DrawLine(30, 600, 50 + values.size() * 100, 600, ColorFromNormalized(Vector4{lineColor[0], lineColor[1], lineColor[2], 1}));
+        ClearBackground(normToReg(backgroundColor));
+        DrawLine(30, 600, 50 + values.size() * 100, 600, normToReg(lineColor));
 
         for (int i = 0; i < values.size(); ++i) {
-            DrawText(values[i].label.c_str(), 40 + i * 100, 650, size, ColorFromNormalized(Vector4{fontColor[0], fontColor[1], fontColor[2], 1}));
+            DrawText(values[i].label.c_str(), 40 + i * 100, 650, size, normToReg(fontColor));
             for (int j = 0; j < values[i].count; ++j) {
-                Color color = ColorFromNormalized(Vector4{teamColor[0], teamColor[1], teamColor[2], 1});
+                Color color = normToReg(teamColor);
                 if (j == 0 && i == myselfIdx) {
-                    color = ColorFromNormalized(Vector4{selfColor[0], selfColor[1], selfColor[2], 1});
+                    color = normToReg(selfColor);
                 }
                 DrawCircle(40 + i * 100, 550 - j * 100, size, color);
             }
@@ -93,7 +96,22 @@ int main() {
             ImGui::InputText("Output", outputBuffer, 999);
 
             if (ImGui::Button("Generate")) {
-                shouldTakeScreenshot = true;
+                auto img = GenImageColor(float(60 + values.size() * 100), 675, normToReg(backgroundColor));
+
+                ImageDrawLine(&img, 30, 600, 50 + values.size() * 100, 600, normToReg(lineColor));
+
+                for (int i = 0; i < values.size(); ++i) {
+                    ImageDrawText(&img, values[i].label.c_str(), 40 + i * 100, 650, size, normToReg(fontColor));
+                    for (int j = 0; j < values[i].count; ++j) {
+                        Color color = normToReg(teamColor);
+                        if (j == 0 && i == myselfIdx) {
+                            color = normToReg(selfColor);
+                        }
+                        ImageDrawCircle(&img, 40 + i * 100, 550 - j * 100, size, color);
+                    }
+                }
+
+                ExportImage(img, outputBuffer);
             }
         }
         ImGui::End();
@@ -102,16 +120,6 @@ int main() {
         rlImGuiEnd();
 
         EndDrawing();
-
-        if (shouldTakeScreenshot) {
-            auto img = LoadImageFromScreen();
-            auto bounds = Rectangle{0,0, float(60 + values.size() * 100), 675};
-            ImageCrop(&img, bounds);
-
-            ExportImage(img, outputBuffer);
-
-            shouldTakeScreenshot = false;
-        }
     }
 
     rlImGuiShutdown();
