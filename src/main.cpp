@@ -35,7 +35,7 @@ int main() {
     } while (!file.eof());
     file.close();
 
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
     SetTargetFPS(144);
 
     InitWindow(1280, 720, "Spread Maker");
