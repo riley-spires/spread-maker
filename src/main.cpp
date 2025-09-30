@@ -20,7 +20,7 @@ int main() {
     std::vector<Point> values;
 
     std::ifstream file("x-axis.csv");
-    if (file.bad()) {
+    if (file.fail()) {
         std::println(std::cerr, "ERROR: Could not open 'x-axis.csv'");
         return 1;
     }
